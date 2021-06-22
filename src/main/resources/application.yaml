@@ -1,0 +1,18 @@
+server:
+  port: 8111
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: account
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  profiles:
+    active: ${PROFILE}
+
+reactor:
+  ipc:
+    netty:
+      workerCount: 1
