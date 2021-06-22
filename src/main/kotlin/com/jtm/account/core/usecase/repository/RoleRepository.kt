@@ -1,4 +1,4 @@
-package com.jtm.account.core.usecase
+package com.jtm.account.core.usecase.repository
 
 import com.jtm.account.core.domain.entity.Role
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
