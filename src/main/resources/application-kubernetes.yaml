@@ -3,3 +3,16 @@ spring:
     mongodb:
       uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/admin
       database: ${MONGO_DATABASE}
+
+security:
+  jwt:
+    access-key: ${ACCESS_KEY}
+    refresh-key: ${REFRESH_KEY}
+    api-key: ${API_KEY}
+    request-key: ${REQUEST_KEY}
+    verify-key: ${VERIFY_KEY}
+
+jtm:
+  mail:
+    apiKey: ${MAIL_APIKEY}
+    apiSecret: ${MAIL_APISECRET}
