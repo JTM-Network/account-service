@@ -10,4 +10,6 @@ import java.util.*
 interface RoleRepository: ReactiveMongoRepository<Role, UUID> {
 
     fun findByName(name: String): Mono<Role>
+
+    fun findByPriority(priority: Int): Mono<Role>
 }
