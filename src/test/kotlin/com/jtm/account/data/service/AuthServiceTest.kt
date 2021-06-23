@@ -10,7 +10,6 @@ import com.jtm.account.core.domain.exception.RoleNotFound
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.RoleRepository
 import com.jtm.account.core.usecase.token.TokenProvider
-import com.turbomanage.httpclient.HttpHead
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,12 +26,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @RunWith(SpringRunner::class)
-class AccountProfileServiceTest {
+class AuthServiceTest {
 
     private val profileRepository = mock(AccountProfileRepository::class.java)
     private val roleRepository = mock(RoleRepository::class.java)
     private val tokenProvider = mock(TokenProvider::class.java)
-    private val profileService = AccountProfileService(profileRepository, roleRepository, tokenProvider)
+    private val profileService = AuthService(profileRepository, roleRepository, tokenProvider)
 
     @Test fun registerTest() {
         val encoder = mock(PasswordEncoder::class.java)

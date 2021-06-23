@@ -1,6 +1,6 @@
 package com.jtm.account
 
-import com.jtm.account.data.service.AccountProfileServiceTest
+import com.jtm.account.data.service.AuthServiceTest
 import com.jtm.account.data.service.RoleServiceTest
 import com.jtm.account.presenter.controller.AuthControllerTest
 import com.jtm.account.presenter.controller.RoleControllerTest
@@ -12,7 +12,7 @@ import org.junit.runners.Suite
     RoleServiceTest::class,
     RoleControllerTest::class,
 
-    AccountProfileServiceTest::class,
+    AuthServiceTest::class,
     AuthControllerTest::class
 ])
 class AccountServiceTestSuite

@@ -2,7 +2,7 @@ package com.jtm.account.presenter.controller
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.AccountProfile
-import com.jtm.account.data.service.AccountProfileService
+import com.jtm.account.data.service.AuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.http.server.reactive.ServerHttpResponse
@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/auth")
-class AuthController @Autowired constructor(private val profileService: AccountProfileService) {
+class AuthController @Autowired constructor(private val profileService: AuthService) {
 
     @PostMapping("/register")
     fun register(@RequestBody profileDto: AccountProfileDto): Mono<AccountProfile> = profileService.register(profileDto)

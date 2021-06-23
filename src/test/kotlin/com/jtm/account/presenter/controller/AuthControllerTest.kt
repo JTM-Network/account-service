@@ -2,7 +2,7 @@ package com.jtm.account.presenter.controller
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.AccountProfile
-import com.jtm.account.data.service.AccountProfileService
+import com.jtm.account.data.service.AuthService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -26,7 +26,7 @@ class AuthControllerTest {
 
     @Autowired lateinit var testClient: WebTestClient
 
-    @MockBean lateinit var profileService: AccountProfileService
+    @MockBean lateinit var profileService: AuthService
 
     @Test fun registerTest() {
         `when`(profileService.register(anyOrNull())).thenReturn(Mono.just(AccountProfile(UUID.randomUUID(), "test", "email", "pass", listOf(), false).protectedView()))

@@ -15,9 +15,9 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 @Service
-class AccountProfileService @Autowired constructor(private val profileRepository: AccountProfileRepository,
-                                                   private val roleRepository: RoleRepository,
-                                                   private val tokenProvider: TokenProvider) {
+class AuthService @Autowired constructor(private val profileRepository: AccountProfileRepository,
+                                         private val roleRepository: RoleRepository,
+                                         private val tokenProvider: TokenProvider) {
 
     fun register(accountProfileDto: AccountProfileDto): Mono<AccountProfile> {
         val username = accountProfileDto.username ?: return Mono.error { InvalidCredentials() }
