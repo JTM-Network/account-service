@@ -16,11 +16,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.mock
+import org.springframework.http.HttpCookie
 import org.springframework.http.HttpHeaders
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.util.MultiValueMap
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.util.*
@@ -189,23 +192,29 @@ class AuthServiceTest {
         val request = mock(ServerHttpRequest::class.java)
         val response = mock(ServerHttpResponse::class.java)
         val headers = mock(HttpHeaders::class.java)
+        val cookies: MultiValueMap<String, HttpCookie> = mock()
+        val cookie = mock(HttpCookie::class.java)
 
-        `when`(request.headers).thenReturn(headers)
         `when`(response.headers).thenReturn(headers)
-        `when`(headers.getFirst(anyString())).thenReturn("Bearer test")
-        `when`(tokenProvider.getEmail(anyString())).thenReturn("test")
+        `when`(request.cookies).thenReturn(cookies)
+        `when`(cookies.getFirst("refreshToken")).thenReturn(cookie)
+        `when`(cookie.value).thenReturn("test")
+        `when`(tokenProvider.getEmailRefresh(anyString())).thenReturn("test")
         `when`(tokenProvider.createAccessToken(anyOrNull())).thenReturn("test")
         `when`(profileRepository.findByEmail(anyString())).thenReturn(Mono.just(accountProfile))
 
         val returned = profileService.refresh(request, response)
 
-        verify(request, times(1)).headers
+        verify(request, times(1)).cookies
         verifyNoMoreInteractions(request)
 
-        verify(headers, times(1)).getFirst(anyString())
-        verifyNoMoreInteractions(headers)
+        verify(cookies, times(1)).getFirst(anyString())
+        verifyNoMoreInteractions(cookies)
 
-        verify(tokenProvider, times(1)).getEmail(anyString())
+        verify(cookie, times(1)).value
+        verifyNoMoreInteractions(cookie)
+
+        verify(tokenProvider, times(1)).getEmailRefresh(anyString())
         verifyNoMoreInteractions(tokenProvider)
 
         verify(profileRepository, times(1)).findByEmail(anyString())
