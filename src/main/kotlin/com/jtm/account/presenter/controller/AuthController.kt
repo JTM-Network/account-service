@@ -21,4 +21,7 @@ class AuthController @Autowired constructor(private val profileService: AuthServ
 
     @GetMapping("/me")
     fun me(request: ServerHttpRequest): Mono<AccountProfile> = profileService.whoami(request)
+
+    @GetMapping("/refresh")
+    fun refresh(request: ServerHttpRequest, res: ServerHttpResponse): Mono<String> = profileService.refresh(request, res)
 }

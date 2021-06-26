@@ -10,6 +10,7 @@ import com.jtm.account.core.domain.exception.RoleNotFound
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.RoleRepository
 import com.jtm.account.core.usecase.token.TokenProvider
+import com.turbomanage.httpclient.HttpHead
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,6 +33,7 @@ class AuthServiceTest {
     private val roleRepository = mock(RoleRepository::class.java)
     private val tokenProvider = mock(TokenProvider::class.java)
     private val profileService = AuthService(profileRepository, roleRepository, tokenProvider)
+    private val accountProfile = mock(AccountProfile::class.java)
 
     @Test fun registerTest() {
         val encoder = mock(PasswordEncoder::class.java)
@@ -84,7 +86,6 @@ class AuthServiceTest {
     }
 
     @Test fun loginTest() {
-        val accountProfile = mock(AccountProfile::class.java)
         val httpResponse = mock(ServerHttpResponse::class.java)
         val headers = mock(HttpHeaders::class.java)
 
@@ -125,6 +126,7 @@ class AuthServiceTest {
 
     @Test fun whoamiTest() {
         val request = mock(ServerHttpRequest::class.java)
+
         val headers = mock(HttpHeaders::class.java)
 
         `when`(request.headers).thenReturn(headers)
@@ -181,5 +183,36 @@ class AuthServiceTest {
         StepVerifier.create(returned)
             .expectError(AccountNotFound::class.java)
             .verify()
+    }
+
+    @Test fun refreshTest() {
+        val request = mock(ServerHttpRequest::class.java)
+        val response = mock(ServerHttpResponse::class.java)
+        val headers = mock(HttpHeaders::class.java)
+
+        `when`(request.headers).thenReturn(headers)
+        `when`(response.headers).thenReturn(headers)
+        `when`(headers.getFirst(anyString())).thenReturn("Bearer test")
+        `when`(tokenProvider.getEmail(anyString())).thenReturn("test")
+        `when`(tokenProvider.createAccessToken(anyOrNull())).thenReturn("test")
+        `when`(profileRepository.findByEmail(anyString())).thenReturn(Mono.just(accountProfile))
+
+        val returned = profileService.refresh(request, response)
+
+        verify(request, times(1)).headers
+        verifyNoMoreInteractions(request)
+
+        verify(headers, times(1)).getFirst(anyString())
+        verifyNoMoreInteractions(headers)
+
+        verify(tokenProvider, times(1)).getEmail(anyString())
+        verifyNoMoreInteractions(tokenProvider)
+
+        verify(profileRepository, times(1)).findByEmail(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .assertNext { assertThat(it).isEqualTo("test") }
+            .verifyComplete()
     }
 }

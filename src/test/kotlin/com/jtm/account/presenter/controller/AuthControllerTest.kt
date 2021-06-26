@@ -77,4 +77,18 @@ class AuthControllerTest {
         verify(profileService, times(1)).whoami(anyOrNull())
         verifyNoMoreInteractions(profileService)
     }
+
+    @Test fun refreshTest() {
+        `when`(profileService.refresh(anyOrNull(), anyOrNull())).thenReturn(Mono.just("test"))
+
+        testClient.get()
+            .uri("/auth/refresh")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$").isEqualTo("test")
+
+        verify(profileService, times(1)).refresh(anyOrNull(), anyOrNull())
+        verifyNoMoreInteractions(profileService)
+    }
 }
