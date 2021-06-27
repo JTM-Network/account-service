@@ -91,4 +91,16 @@ class AuthControllerTest {
         verify(profileService, times(1)).refresh(anyOrNull(), anyOrNull())
         verifyNoMoreInteractions(profileService)
     }
+
+    @Test fun logoutTest() {
+        `when`(profileService.logout(anyOrNull())).thenReturn(Mono.empty())
+
+        testClient.get()
+            .uri("/auth/logout")
+            .exchange()
+            .expectStatus().isOk
+
+        verify(profileService, times(1)).logout(anyOrNull())
+        verifyNoMoreInteractions(profileService)
+    }
 }

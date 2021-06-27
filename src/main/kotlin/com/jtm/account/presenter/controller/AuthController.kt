@@ -24,4 +24,7 @@ class AuthController @Autowired constructor(private val profileService: AuthServ
 
     @GetMapping("/refresh")
     fun refresh(request: ServerHttpRequest, res: ServerHttpResponse): Mono<String> = profileService.refresh(request, res)
+
+    @GetMapping("/logout")
+    fun logout(response: ServerHttpResponse): Mono<Void> = profileService.logout(response)
 }

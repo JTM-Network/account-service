@@ -224,4 +224,22 @@ class AuthServiceTest {
             .assertNext { assertThat(it).isEqualTo("test") }
             .verifyComplete()
     }
+
+    @Test fun logoutTest() {
+        val response = mock(ServerHttpResponse::class.java)
+        val headers = mock(HttpHeaders::class.java)
+
+        `when`(response.headers).thenReturn(headers)
+
+        val returned = profileService.logout(response)
+
+        verify(response, times(1)).headers
+        verifyNoMoreInteractions(response)
+
+        verify(headers, times(2)).add(anyString(), anyString())
+        verifyNoMoreInteractions(headers)
+
+        StepVerifier.create(returned)
+            .verifyComplete()
+    }
 }

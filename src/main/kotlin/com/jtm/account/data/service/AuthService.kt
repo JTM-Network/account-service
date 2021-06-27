@@ -50,8 +50,8 @@ class AuthService @Autowired constructor(private val profileRepository: AccountP
             .switchIfEmpty(Mono.defer { Mono.error { InvalidEmailOrPass() } })
             .flatMap {
                 if (!it.passwordMatches(password, tokenProvider.passwordEncoder())) return@flatMap Mono.error { InvalidEmailOrPass() }
-                response.headers.add("Set-Cookie", "refreshToken=" + tokenProvider.createRefreshToken(it) + ";Max-Age=5184000000;SameSite=None; HttpOnly; Path=/; Secure")
-                response.headers.add("Set-Cookie", "accessToken=" + tokenProvider.createAccessCookieToken(it) + ";Max-Age=600000;SameSite=None; HttpOnly; Path=/; Secure")
+                response.headers.add("Set-Cookie", "refreshToken=${tokenProvider.createRefreshToken(it)};Max-Age=5184000000;SameSite=None; HttpOnly; Path=/; Secure")
+                response.headers.add("Set-Cookie", "accessToken=${tokenProvider.createAccessCookieToken(it)};Max-Age=600000;SameSite=None; HttpOnly; Path=/; Secure")
                 return@flatMap Mono.just(tokenProvider.createAccessToken(it))
             }
     }
@@ -70,8 +70,15 @@ class AuthService @Autowired constructor(private val profileRepository: AccountP
         val email = tokenProvider.getEmailRefresh(cookie.value)
         return profileRepository.findByEmail(email)
             .flatMap {
-                response.headers.add("Set-Cookie", "accessToken=" + tokenProvider.createAccessCookieToken(it) + ";Max-Age=600000;SameSite=None; HttpOnly; Path=/; Secure")
+                response.headers.add("Set-Cookie", "accessToken=${tokenProvider.createAccessCookieToken(it)};Max-Age=600000;SameSite=None; HttpOnly; Path=/; Secure")
                 return@flatMap Mono.just(tokenProvider.createAccessToken(it))
             }
+    }
+
+    fun logout(response: ServerHttpResponse): Mono<Void> {
+        val headers = response.headers
+        headers.add("Set-Cookie", "refreshToken=;SameSite=None; HttpOnly; Path=/; Secure")
+        headers.add("Set-Cookie", "accessToken=;SameSite=None; HttpOnly; Path=/; Secure")
+        return Mono.empty()
     }
 }
