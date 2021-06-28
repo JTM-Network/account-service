@@ -7,7 +7,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: main-cluster
-  GKE_ZONE: europe-west1
+  GKE_ZONE: europe-west1-b
   IMAGE: jtm-account
   NAME: account
 
