@@ -11,7 +11,7 @@ import java.util.stream.Collectors
 
 class UtilJwt {
     companion object {
-        fun accessToken(key: String, email: String, roles: List<Role>): String {
+        fun accessToken(key: String, id: UUID, email: String, roles: List<Role>): String {
             val currentTime = System.currentTimeMillis()
             val exp = currentTime + TimeUnit.MINUTES.toMillis(10)
 
@@ -20,6 +20,7 @@ class UtilJwt {
                 .setIssuedAt(Date(currentTime))
                 .setExpiration(Date(exp))
                 .claim("roles", roles.stream().map { "ROLE_" + it.name }.collect(Collectors.toList()))
+                .claim("id", id.toString())
                 .compact()
         }
 

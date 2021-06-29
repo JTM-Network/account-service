@@ -30,7 +30,7 @@ open class TokenProvider {
     lateinit var verifyKey: String
 
     fun createAccessToken(profile: AccountProfile): String {
-        return UtilJwt.accessToken(accessKey, profile.email, profile.roles)
+        return UtilJwt.accessToken(accessKey, profile.id, profile.email, profile.roles)
     }
 
     fun createAccessCookieToken(profile: AccountProfile): String {
