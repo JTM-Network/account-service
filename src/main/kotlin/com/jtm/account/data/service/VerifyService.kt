@@ -51,6 +51,7 @@ class VerifyService @Autowired constructor(private val profileRepository: Accoun
         val token = if (bearer.startsWith("Bearer ")) bearer.replace("Bearer ", "") else return Mono.error { InvalidJwtToken() }
         val verify = request.headers.getFirst("Verify") ?: return Mono.error { InvalidVerifyToken() }
         val email = tokenProvider.getEmail(token)
+        println("Email: $email")
         return profileRepository.findByEmail(email)
             .flatMap { profile ->
                 return@flatMap verificationRepository.findByTokenAndEmail(token, verify)
