@@ -1,14 +1,19 @@
 package com.jtm.account.data.service
 
+import com.jtm.account.core.domain.entity.EmailVerification
 import com.jtm.account.core.domain.exception.InvalidJwtToken
+import com.jtm.account.core.domain.exception.InvalidVerifyToken
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.VerificationRepository
 import com.jtm.account.core.usecase.token.TokenProvider
+import com.jtm.account.core.util.MailjetRequestBuilder
+import com.mailjet.client.MailjetRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Steps:
@@ -19,14 +24,20 @@ import java.util.*
 @Service
 class VerifyService @Autowired constructor(private val profileRepository: AccountProfileRepository,
                                            private val verificationRepository: VerificationRepository,
-                                           private val tokenProvider: TokenProvider) {
+                                           private val tokenProvider: TokenProvider,
+                                           private val mailService: MailService) {
 
     fun requestVerification(request: ServerHttpRequest): Mono<Void> {
         val bearer = request.headers.getFirst("Authorization") ?: return Mono.error { InvalidJwtToken() }
         val token = if (bearer.startsWith("Bearer ")) bearer.replace("Bearer ", "") else return Mono.error { InvalidJwtToken() }
         val email = tokenProvider.getEmail(token)
-        return profileRepository.findByEmail(email)
-            .flatMap { Mono.empty() }
+        return verificationRepository.findByEmail(email)
+            .switchIfEmpty(Mono.defer { verificationRepository.save(EmailVerification(email = email, token = tokenProvider.createVerificationToken(email), createdTime = System.currentTimeMillis(), endTime = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1))) })
+            .flatMap {
+                if (!it.isValid()) return@flatMap verificationRepository.deleteByEmail(email).flatMap { verificationRepository.save(EmailVerification(email = email, token = tokenProvider.createVerificationToken(email), createdTime = System.currentTimeMillis(), endTime = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1))) }
+                    else return@flatMap Mono.just(it)
+            }
+            .flatMap { mailService.sendMail(verificationEmail(it.id, it.email)).then() }
     }
 
     fun getVerification(id: UUID): Mono<String> {
@@ -37,7 +48,24 @@ class VerifyService @Autowired constructor(private val profileRepository: Accoun
     fun confirmVerification(request: ServerHttpRequest): Mono<Void> {
         val bearer = request.headers.getFirst("Authorization") ?: return Mono.error { InvalidJwtToken() }
         val token = if (bearer.startsWith("Bearer ")) bearer.replace("Bearer ", "") else return Mono.error { InvalidJwtToken() }
-        return verificationRepository.findByToken(token)
-            .flatMap { Mono.empty() }
+        val verify = request.headers.getFirst("Verify") ?: return Mono.error { InvalidVerifyToken() }
+        val email = tokenProvider.getEmail(token)
+        return profileRepository.findByEmail(email)
+            .flatMap { profile ->
+                verificationRepository.findByTokenAndEmail(token, verify)
+                    .flatMap {
+                        verificationRepository.save(it.confirmed())
+                            .flatMap { profileRepository.save(profile.verified()).then() }
+                    }
+            }
+    }
+
+    private fun verificationEmail(id: UUID, email: String): MailjetRequest {
+        return MailjetRequestBuilder()
+            .withFrom("no-reply@jtm-network.com", "JTM Network")
+            .withTo(email)
+            .withSubject("Email Verification")
+            .withText("Click this link to verify your account: https://www.jtm-network.com/verify/${id.toString()}")
+            .build()
     }
 }

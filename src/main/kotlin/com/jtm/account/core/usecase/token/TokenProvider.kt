@@ -41,8 +41,8 @@ open class TokenProvider {
         return UtilJwt.refreshToken(refreshKey, profile.email, profile.roles)
     }
 
-    fun createVerificationToken(email: String): String? {
-        return null
+    fun createVerificationToken(email: String): String {
+        return UtilJwt.verifyToken(verifyKey, email)
     }
 
     fun createRequestToken(email: String, id: UUID): String? {

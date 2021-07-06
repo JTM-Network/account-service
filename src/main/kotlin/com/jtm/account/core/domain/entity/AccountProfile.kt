@@ -34,4 +34,9 @@ data class AccountProfile(
         this.password = ""
         return this
     }
+
+    fun verified(): AccountProfile {
+        this.verified = true
+        return this
+    }
 }

@@ -9,4 +9,10 @@ import java.util.*
 @Repository
 interface VerificationRepository: ReactiveMongoRepository<EmailVerification, UUID> {
     fun findByToken(token: String): Mono<EmailVerification>
+
+    fun findByTokenAndEmail(token: String, email: String): Mono<EmailVerification>
+
+    fun findByEmail(email: String): Mono<EmailVerification>
+
+    fun deleteByEmail(email: String): Mono<EmailVerification>
 }

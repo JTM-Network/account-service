@@ -61,6 +61,13 @@ class UtilJwt {
                 .compact()
         }
 
+        fun verifyToken(key: String, email: String): String {
+            return Jwts.builder().signWith(SignatureAlgorithm.HS256, key)
+                .setSubject(email)
+                .setIssuedAt(Date(System.currentTimeMillis()))
+                .compact()
+        }
+
         fun getEmail(key: String, token: String): String {
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token).body.subject
         }
