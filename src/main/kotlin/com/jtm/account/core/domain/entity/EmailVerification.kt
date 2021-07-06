@@ -14,7 +14,7 @@ data class EmailVerification(
     val endTime: Long) {
 
     fun isValid(): Boolean {
-        return System.currentTimeMillis() < endTime
+        return System.currentTimeMillis() < endTime || !confirmed
     }
 
     fun confirmed(): EmailVerification {

@@ -1,6 +1,6 @@
 package com.jtm.account.presenter.controller
 
-import com.jtm.account.data.service.VerifyService
+import com.jtm.account.data.service.account.VerifyService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.GetMapping

@@ -1,4 +1,4 @@
-package com.jtm.account.data.service
+package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.AccountProfile
@@ -10,7 +10,6 @@ import com.jtm.account.core.domain.exception.RoleNotFound
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.RoleRepository
 import com.jtm.account.core.usecase.token.TokenProvider
-import com.turbomanage.httpclient.HttpHead
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

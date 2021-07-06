@@ -49,7 +49,7 @@ class UtilJwt {
                 .compact()
         }
 
-        fun passwordResetToken(key: String, email: String, id: UUID): String {
+        fun passwordResetToken(key: String, email: String): String {
             val currentTime = System.currentTimeMillis()
             val exp = currentTime + TimeUnit.DAYS.toMillis(1)
 
@@ -57,7 +57,6 @@ class UtilJwt {
                 .setSubject(email)
                 .setIssuedAt(Date(currentTime))
                 .setExpiration(Date(exp))
-                .claim("id", id)
                 .compact()
         }
 

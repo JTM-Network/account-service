@@ -2,7 +2,7 @@ package com.jtm.account.presenter.controller
 
 import com.jtm.account.core.domain.dto.RoleDto
 import com.jtm.account.core.domain.entity.Role
-import com.jtm.account.data.service.RoleService
+import com.jtm.account.data.service.account.RoleService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`

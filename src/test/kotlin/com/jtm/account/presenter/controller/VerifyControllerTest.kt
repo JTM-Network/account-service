@@ -1,11 +1,10 @@
 package com.jtm.account.presenter.controller
 
-import com.jtm.account.data.service.VerifyService
+import com.jtm.account.data.service.account.VerifyService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
-import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions

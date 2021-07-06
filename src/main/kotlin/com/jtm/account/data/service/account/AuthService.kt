@@ -1,9 +1,8 @@
-package com.jtm.account.data.service
+package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.exception.*
-import com.jtm.account.core.domain.model.TokenPair
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.RoleRepository
 import com.jtm.account.core.usecase.token.TokenProvider

@@ -1,4 +1,4 @@
-package com.jtm.account.data.service
+package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.entity.EmailVerification
@@ -6,6 +6,7 @@ import com.jtm.account.core.domain.exception.EmailVerificationNotFound
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.VerificationRepository
 import com.jtm.account.core.usecase.token.TokenProvider
+import com.jtm.account.data.service.MailService
 import com.mailjet.client.MailjetResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

@@ -2,7 +2,7 @@ package com.jtm.account.presenter.controller
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.AccountProfile
-import com.jtm.account.data.service.AuthService
+import com.jtm.account.data.service.account.AuthService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.http.server.reactive.ServerHttpResponse

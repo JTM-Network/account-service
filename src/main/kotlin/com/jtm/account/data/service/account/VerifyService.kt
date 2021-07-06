@@ -1,4 +1,4 @@
-package com.jtm.account.data.service
+package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.entity.EmailVerification
 import com.jtm.account.core.domain.exception.EmailVerificationNotFound
@@ -8,6 +8,7 @@ import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.VerificationRepository
 import com.jtm.account.core.usecase.token.TokenProvider
 import com.jtm.account.core.util.MailjetRequestBuilder
+import com.jtm.account.data.service.MailService
 import com.mailjet.client.MailjetRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.server.reactive.ServerHttpRequest

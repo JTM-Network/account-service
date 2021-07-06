@@ -1,4 +1,4 @@
-package com.jtm.account.data.service
+package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.dto.RoleDto
 import com.jtm.account.core.domain.entity.Role

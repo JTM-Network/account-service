@@ -45,8 +45,8 @@ open class TokenProvider {
         return UtilJwt.verifyToken(verifyKey, email)
     }
 
-    fun createRequestToken(email: String, id: UUID): String? {
-        return null
+    fun createRequestToken(email: String): String {
+        return UtilJwt.passwordResetToken(requestKey, email)
     }
 
     fun getEmail(token: String): String {

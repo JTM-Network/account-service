@@ -2,7 +2,7 @@ package com.jtm.account.presenter.controller
 
 import com.jtm.account.core.domain.dto.RoleDto
 import com.jtm.account.core.domain.entity.Role
-import com.jtm.account.data.service.RoleService
+import com.jtm.account.data.service.account.RoleService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux

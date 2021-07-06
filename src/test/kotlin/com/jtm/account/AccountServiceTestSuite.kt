@@ -1,11 +1,12 @@
 package com.jtm.account
 
-import com.jtm.account.data.service.AuthServiceTest
-import com.jtm.account.data.service.RoleServiceTest
-import com.jtm.account.data.service.VerifyServiceTest
+import com.jtm.account.data.service.account.AuthServiceTest
+import com.jtm.account.data.service.account.PasswordServiceTest
+import com.jtm.account.data.service.account.RoleServiceTest
+import com.jtm.account.data.service.account.VerifyServiceTest
 import com.jtm.account.presenter.controller.AuthControllerTest
+import com.jtm.account.presenter.controller.PasswordControllerTest
 import com.jtm.account.presenter.controller.RoleControllerTest
-import com.jtm.account.presenter.controller.VerifyController
 import com.jtm.account.presenter.controller.VerifyControllerTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
@@ -19,6 +20,9 @@ import org.junit.runners.Suite
     AuthControllerTest::class,
 
     VerifyServiceTest::class,
-    VerifyControllerTest::class
+    VerifyControllerTest::class,
+
+    PasswordServiceTest::class,
+    PasswordControllerTest::class
 ])
 class AccountServiceTestSuite
