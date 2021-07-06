@@ -9,10 +9,11 @@ import java.util.concurrent.TimeUnit
 data class PasswordReset(
     @Id val id: UUID = UUID.randomUUID(),
     val token: String,
+    val email: String,
     val used: Boolean = false,
     val created: Long = System.currentTimeMillis(),
-    val expire: Long = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
-) {
+    val expire: Long = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)) {
+    
     fun valid(): Boolean {
         return !used || System.currentTimeMillis() < expire
     }

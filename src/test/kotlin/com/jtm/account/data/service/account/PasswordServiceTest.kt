@@ -32,10 +32,12 @@ class PasswordServiceTest {
     private val mailService = mock(MailService::class.java)
     private val passwordService = PasswordService(profileRepository, resetRepository, tokenProvider)
 
+    private val passwordReset = PasswordReset(token = "token", email = "email")
+
     @Test
     fun requestForgotPasswordResetTest() {
         val profile = mock(AccountProfile::class.java)
-        val request = PasswordReset(token = "token")
+        val request = PasswordReset(token = "token", email = "email")
 
         `when`(profileRepository.findByEmail(anyString())).thenReturn(Mono.just(profile))
         `when`(tokenProvider.createRequestToken(anyString())).thenReturn("test")
@@ -67,7 +69,7 @@ class PasswordServiceTest {
 
     @Test
     fun getForgotPasswordTokenTest() {
-        `when`(resetRepository.findById(any(UUID::class.java))).thenReturn(Mono.just(PasswordReset(token = "token")))
+        `when`(resetRepository.findById(any(UUID::class.java))).thenReturn(Mono.just(passwordReset))
 
         val returned = passwordService.getForgotPasswordToken(UUID.randomUUID())
 
@@ -105,7 +107,7 @@ class PasswordServiceTest {
         `when`(profile.email).thenReturn("test@gmail.com")
         `when`(tokenProvider.passwordEncoder()).thenReturn(encoder)
         `when`(tokenProvider.getEmailPasswordReset(anyString())).thenReturn("test")
-        `when`(resetRepository.findByToken(anyString())).thenReturn(Mono.just(PasswordReset(token = "token")))
+        `when`(resetRepository.findByToken(anyString())).thenReturn(Mono.just(passwordReset))
         `when`(profileRepository.findByEmail(anyString())).thenReturn(Mono.just(profile))
         `when`(profileRepository.save(anyOrNull())).thenReturn(Mono.just(profile))
         `when`(resetRepository.deleteAllByEmail(anyString())).thenReturn(Mono.empty())

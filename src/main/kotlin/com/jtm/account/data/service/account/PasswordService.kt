@@ -25,7 +25,7 @@ class PasswordService @Autowired constructor(
         return profileRepository.findByEmail(email)
             .switchIfEmpty(Mono.defer { Mono.error(AccountNotFound()) })
             .flatMap {
-                resetRepository.save(PasswordReset(token = tokenProvider.createRequestToken(email)))
+                resetRepository.save(PasswordReset(token = tokenProvider.createRequestToken(email), email = email))
                     .flatMap { mailService.sendMail(resetEmail(it.id, email)).then() }
             }
     }
