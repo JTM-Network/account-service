@@ -2,10 +2,7 @@ package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.PasswordReset
-import com.jtm.account.core.domain.exception.AccountNotFound
-import com.jtm.account.core.domain.exception.InvalidPassword
-import com.jtm.account.core.domain.exception.InvalidResetToken
-import com.jtm.account.core.domain.exception.PasswordResetNotFound
+import com.jtm.account.core.domain.exception.*
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.PasswordResetRepository
 import com.jtm.account.core.usecase.token.TokenProvider
@@ -28,8 +25,8 @@ class PasswordService @Autowired constructor(
         return profileRepository.findByEmail(email)
             .switchIfEmpty(Mono.defer { Mono.error(AccountNotFound()) })
             .flatMap {
-                resetRepository.save(PasswordReset(token = tokenProvider.createRequestToken(email), email = email))
-                    .flatMap { mailService.sendMail(resetEmail(it.id, it.email)).then() }
+                resetRepository.save(PasswordReset(token = tokenProvider.createRequestToken(email)))
+                    .flatMap { mailService.sendMail(resetEmail(it.id, email)).then() }
             }
     }
 
@@ -44,7 +41,8 @@ class PasswordService @Autowired constructor(
         val password = profileDto.password ?: return Mono.error { InvalidPassword() }
         return resetRepository.findByToken(token)
             .flatMap {
-                profileRepository.findByEmail(it.email)
+                val email = tokenProvider.getEmailPasswordReset(it.token)
+                return@flatMap profileRepository.findByEmail(email)
                     .flatMap { profile ->
                         profileRepository.save(profile.setPassword(password, tokenProvider.passwordEncoder()))
                             .flatMap { resetRepository.deleteAllByEmail(profile.email) }
