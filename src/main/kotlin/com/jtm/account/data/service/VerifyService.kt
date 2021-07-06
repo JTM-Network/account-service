@@ -1,6 +1,7 @@
 package com.jtm.account.data.service
 
 import com.jtm.account.core.domain.entity.EmailVerification
+import com.jtm.account.core.domain.exception.EmailVerificationNotFound
 import com.jtm.account.core.domain.exception.InvalidJwtToken
 import com.jtm.account.core.domain.exception.InvalidVerifyToken
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
@@ -52,9 +53,9 @@ class VerifyService @Autowired constructor(private val profileRepository: Accoun
         val email = tokenProvider.getEmail(token)
         return profileRepository.findByEmail(email)
             .flatMap { profile ->
-                verificationRepository.findByTokenAndEmail(token, verify)
-                    .flatMap {
-                        verificationRepository.save(it.confirmed())
+                return@flatMap verificationRepository.findByTokenAndEmail(token, verify)
+                    .switchIfEmpty(Mono.defer { Mono.error(EmailVerificationNotFound()) })
+                    .flatMap { verificationRepository.save(it.confirmed())
                             .flatMap { profileRepository.save(profile.verified()).then() }
                     }
             }

@@ -2,6 +2,7 @@ package com.jtm.account.data.service
 
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.entity.EmailVerification
+import com.jtm.account.core.domain.exception.EmailVerificationNotFound
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.VerificationRepository
 import com.jtm.account.core.usecase.token.TokenProvider
@@ -78,6 +79,36 @@ class VerifyServiceTest {
         StepVerifier.create(returned)
             .assertNext { assertThat(it).isEqualTo("token") }
             .verifyComplete()
+    }
+
+    @Test fun confirmVerification_tokenNotFoundTest() {
+        val request = mock(ServerHttpRequest::class.java)
+        val headers = mock(HttpHeaders::class.java)
+        val profile = mock(AccountProfile::class.java)
+
+        `when`(request.headers).thenReturn(headers)
+        `when`(headers.getFirst(anyString())).thenReturn("Bearer test")
+        `when`(tokenProvider.getEmail(anyString())).thenReturn("test")
+        `when`(profileRepository.findByEmail(anyString())).thenReturn(Mono.just(profile))
+        `when`(verificationRepository.findByTokenAndEmail(anyString(), anyString())).thenReturn(Mono.empty())
+
+        val returned = verifyService.confirmVerification(request)
+
+        verify(request, times(2)).headers
+        verifyNoMoreInteractions(request)
+
+        verify(headers, times(2)).getFirst(anyString())
+        verifyNoMoreInteractions(headers)
+
+        verify(tokenProvider, times(1)).getEmail(anyString())
+        verifyNoMoreInteractions(tokenProvider)
+
+        verify(profileRepository, times(1)).findByEmail(anyString())
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+            .expectError(EmailVerificationNotFound::class.java)
+            .verify()
     }
 
     @Test fun confirmVerificationTest() {
