@@ -26,6 +26,7 @@ class AdminService @Autowired constructor(private val profileRepository: Account
     var code: AuthCode = AuthCode()
 
     init {
+        println("Current code: ${code.code}")
         service.schedule({
             code = AuthCode()
             println("Current admin code: ${code.code}")
