@@ -35,7 +35,7 @@ class AuthService @Autowired constructor(private val profileRepository: AccountP
                                 username,
                                 email,
                                 "",
-                                listOf(role),
+                                mutableListOf(role),
                                 false).setPassword(password, tokenProvider.passwordEncoder())
                         ).map { it.protectedView() }
                     }

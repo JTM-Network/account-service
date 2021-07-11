@@ -12,7 +12,7 @@ data class AccountProfile(
     var username: String,
     var email: String,
     var password: String,
-    val roles: List<Role>,
+    val roles: MutableList<Role>,
     var verified: Boolean
 ) {
     fun update(accountProfileDto: AccountProfileDto): AccountProfile {
@@ -28,6 +28,15 @@ data class AccountProfile(
 
     fun passwordMatches(password: String, encoder: PasswordEncoder): Boolean {
         return encoder.matches(password, this.password)
+    }
+
+    fun hasRole(priority: Int): Boolean {
+        return this.roles.stream().anyMatch { it.priority == priority }
+    }
+
+    fun addRole(role: Role): AccountProfile {
+        this.roles.add(role)
+        return this
     }
 
     fun protectedView(): AccountProfile {

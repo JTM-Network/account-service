@@ -29,7 +29,7 @@ class AuthControllerTest {
     @MockBean lateinit var profileService: AuthService
 
     @Test fun registerTest() {
-        `when`(profileService.register(anyOrNull())).thenReturn(Mono.just(AccountProfile(UUID.randomUUID(), "test", "email", "pass", listOf(), false).protectedView()))
+        `when`(profileService.register(anyOrNull())).thenReturn(Mono.just(AccountProfile(UUID.randomUUID(), "test", "email", "pass", mutableListOf(), false).protectedView()))
 
         testClient.post()
             .uri("/auth/register")
@@ -62,7 +62,7 @@ class AuthControllerTest {
     }
 
     @Test fun meTest() {
-        `when`(profileService.whoami(anyOrNull())).thenReturn(Mono.just(AccountProfile(UUID.randomUUID(), "test", "test", "password", listOf(), false).protectedView()))
+        `when`(profileService.whoami(anyOrNull())).thenReturn(Mono.just(AccountProfile(UUID.randomUUID(), "test", "test", "password", mutableListOf(), false).protectedView()))
 
         testClient.get()
             .uri("/auth/me")

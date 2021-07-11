@@ -134,7 +134,7 @@ class AuthServiceTest {
         `when`(request.headers).thenReturn(headers)
         `when`(headers.getFirst(anyString())).thenReturn("Bearer test")
         `when`(tokenProvider.getEmail(anyString())).thenReturn("test")
-        `when`(profileRepository.findByEmail(anyString())).thenReturn(Mono.just(AccountProfile(UUID.randomUUID(), "test", "test", "password", listOf(), false)))
+        `when`(profileRepository.findByEmail(anyString())).thenReturn(Mono.just(AccountProfile(UUID.randomUUID(), "test", "test", "password", mutableListOf(), false)))
 
         val returned = profileService.whoami(request)
 
