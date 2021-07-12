@@ -66,6 +66,7 @@ class AuthService @Autowired constructor(private val profileRepository: AccountP
 
     fun refresh(request: ServerHttpRequest, response: ServerHttpResponse): Mono<String> {
         val cookie = request.cookies.getFirst("refreshToken") ?: return Mono.error { InvalidJwtToken() }
+        if (cookie.value.isEmpty()) return Mono.error { InvalidJwtToken() }
         val email = tokenProvider.getEmailRefresh(cookie.value)
         return profileRepository.findByEmail(email)
             .flatMap {

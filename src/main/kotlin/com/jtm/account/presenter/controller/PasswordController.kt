@@ -1,7 +1,6 @@
 package com.jtm.account.presenter.controller
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
-import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.data.service.MailService
 import com.jtm.account.data.service.account.PasswordService
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,8 +11,9 @@ import java.util.*
 
 @RestController
 @RequestMapping("/forgot-password")
-class PasswordController @Autowired constructor(val passwordService: PasswordService,
-                                                val mailService: MailService) {
+class PasswordController @Autowired constructor(
+    private val passwordService: PasswordService,
+    private val mailService: MailService) {
 
     @GetMapping("/request")
     fun forgotPasswordRequest(@RequestParam("email") email: String): Mono<Void> {
