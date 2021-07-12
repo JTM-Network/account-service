@@ -210,7 +210,7 @@ class AuthServiceTest {
         verify(cookies, times(1)).getFirst(anyString())
         verifyNoMoreInteractions(cookies)
 
-        verify(cookie, times(1)).value
+        verify(cookie, times(2)).value
         verifyNoMoreInteractions(cookie)
 
         verify(tokenProvider, times(1)).getEmailRefresh(anyString())
