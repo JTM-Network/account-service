@@ -20,12 +20,11 @@ class RoleService @Autowired constructor(private val roleRepository: RoleReposit
     private val logger = LoggerFactory.getLogger(RoleService::class.java)
 
     @PostConstruct
-    fun init() {
-        roleRepository.findByPriority(0)
+    fun init(): Mono<Role> {
+        return roleRepository.findByPriority(0)
             .switchIfEmpty(Mono.defer { roleRepository.save(Role(name = "CLIENT", priority = 0)).doOnSuccess { logger.info("Added CLIENT role.") } })
-
-        roleRepository.findByPriority(10)
-            .switchIfEmpty(Mono.defer { roleRepository.save(Role(name = "ADMIN", priority = 10)).doOnSuccess { logger.info("Added ADMIN role.") } })
+            .then(roleRepository.findByPriority(10)
+                .switchIfEmpty(Mono.defer { roleRepository.save(Role(name = "ADMIN", priority = 10)).doOnSuccess { logger.info("Added ADMIN role.") } }))
     }
 
     fun insertRole(role: RoleDto): Mono<Role> {
