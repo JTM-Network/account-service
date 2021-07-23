@@ -7,7 +7,7 @@ import java.util.*
 
 @Document("roles")
 data class Role(
-    @Id val id: UUID,
+    @Id val id: UUID = UUID.randomUUID(),
     var name: String,
     var priority: Int
 ) {

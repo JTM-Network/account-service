@@ -10,9 +10,19 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
+import javax.annotation.PostConstruct
 
 @Service
 class RoleService @Autowired constructor(private val roleRepository: RoleRepository) {
+
+    @PostConstruct
+    fun init() {
+        roleRepository.findByPriority(0)
+            .switchIfEmpty(Mono.defer { roleRepository.save(Role(name = "CLIENT", priority = 0)) })
+
+        roleRepository.findByPriority(10)
+            .switchIfEmpty(Mono.defer { roleRepository.save(Role(name = "ADMIN", priority = 10)) })
+    }
 
     fun insertRole(role: RoleDto): Mono<Role> {
         return roleRepository.findByName(role.name)
