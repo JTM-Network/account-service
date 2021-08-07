@@ -54,7 +54,11 @@ open class TokenProvider {
     }
 
     fun getEmailRefresh(token: String): String? {
-        return UtilJwt.getEmail(refreshKey, token)
+        return try {
+            UtilJwt.getEmail(refreshKey, token)
+        } catch (ex: Exception) {
+            null
+        }
     }
 
     fun getEmailPasswordReset(token: String): String {
