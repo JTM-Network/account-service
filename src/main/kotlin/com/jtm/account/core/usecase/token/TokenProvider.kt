@@ -3,6 +3,7 @@ package com.jtm.account.core.usecase.token
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.util.UtilJwt
 import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jws
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -56,7 +57,7 @@ open class TokenProvider {
     fun getEmailRefresh(token: String): String? {
         return try {
             UtilJwt.getEmail(refreshKey, token)
-        } catch (ex: Exception) {
+        } catch (ex: ExpiredJwtException) {
             null
         }
     }
