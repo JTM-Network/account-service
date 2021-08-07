@@ -53,7 +53,7 @@ open class TokenProvider {
         return UtilJwt.getEmail(accessKey, token)
     }
 
-    fun getEmailRefresh(token: String): String {
+    fun getEmailRefresh(token: String): String? {
         return UtilJwt.getEmail(refreshKey, token)
     }
 
