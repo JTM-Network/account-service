@@ -44,7 +44,7 @@ class PasswordServiceTest {
         `when`(resetRepository.save(anyOrNull())).thenReturn(Mono.just(request))
         `when`(mailService.sendMail(anyOrNull())).thenReturn(Mono.empty())
 
-        val returned = passwordService.requestForgotPasswordReset("test", mailService)
+        val returned = passwordService.requestForgotPasswordReset("test", null, mailService)
 
         verify(profileRepository, times(1)).findByEmail(anyString())
         verifyNoMoreInteractions(profileRepository)
@@ -57,7 +57,7 @@ class PasswordServiceTest {
     fun requestForgotPasswordReset_thenNotFoundTest() {
         `when`(profileRepository.findByEmail(anyString())).thenReturn(Mono.empty())
 
-        val returned = passwordService.requestForgotPasswordReset("test", mailService)
+        val returned = passwordService.requestForgotPasswordReset("test", "www", mailService)
 
         verify(profileRepository, times(1)).findByEmail(anyString())
         verifyNoMoreInteractions(profileRepository)

@@ -21,12 +21,12 @@ class PasswordService @Autowired constructor(
     private val resetRepository: PasswordResetRepository,
     private val tokenProvider: TokenProvider) {
 
-    fun requestForgotPasswordReset(email: String, mailService: MailService): Mono<Void> {
+    fun requestForgotPasswordReset(email: String, subdomain: String?, mailService: MailService): Mono<Void> {
         return profileRepository.findByEmail(email)
             .switchIfEmpty(Mono.defer { Mono.error(AccountNotFound()) })
             .flatMap {
                 resetRepository.save(PasswordReset(token = tokenProvider.createRequestToken(email), email = email))
-                    .flatMap { mailService.sendMail(resetEmail(it.id, email)).then() }
+                    .flatMap { mailService.sendMail(resetEmail(it.id, if (subdomain.isNullOrEmpty()) "www" else subdomain, email)).then() }
             }
     }
 
@@ -52,12 +52,12 @@ class PasswordService @Autowired constructor(
             }
     }
 
-    private fun resetEmail(id: UUID, email: String): MailjetRequest {
+    private fun resetEmail(id: UUID, subdomain: String, email: String): MailjetRequest {
         return MailjetRequestBuilder()
             .withFrom("no-reply@jtm-network.com", "JTM Network")
             .withTo(email)
             .withSubject("Password Reset")
-            .withText("Click this link to reset your password on your account: https://www.jtm-network.com/reset/${id.toString()}")
+            .withText("Click this link to reset your password on your account: https://${subdomain.ifBlank { "www" }}.jtm-network.com/resetpassword/${id.toString()}")
             .build()
     }
 }

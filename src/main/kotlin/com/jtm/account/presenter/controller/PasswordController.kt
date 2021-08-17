@@ -16,8 +16,8 @@ class PasswordController @Autowired constructor(
     private val mailService: MailService) {
 
     @GetMapping("/request")
-    fun forgotPasswordRequest(@RequestParam("email") email: String): Mono<Void> {
-        return passwordService.requestForgotPasswordReset(email, mailService)
+    fun forgotPasswordRequest(@RequestParam("email") email: String, @RequestParam("subdomain", required = false) subdomain: String?): Mono<Void> {
+        return passwordService.requestForgotPasswordReset(email, subdomain, mailService)
     }
 
     @GetMapping("/{id}")

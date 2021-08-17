@@ -37,14 +37,14 @@ class PasswordControllerTest {
 
     @Test
     fun forgotPasswordResetTest() {
-        `when`(passwordService.requestForgotPasswordReset(anyString(), anyOrNull())).thenReturn(Mono.empty())
+        `when`(passwordService.requestForgotPasswordReset(anyString(), anyOrNull(), anyOrNull())).thenReturn(Mono.empty())
 
         testClient.get()
             .uri("/forgot-password/request?email=test@gmail.com")
             .exchange()
             .expectStatus().isOk
 
-        verify(passwordService, times(1)).requestForgotPasswordReset(anyString(), anyOrNull())
+        verify(passwordService, times(1)).requestForgotPasswordReset(anyString(), anyOrNull(), anyOrNull())
         verifyNoMoreInteractions(passwordService)
     }
 
