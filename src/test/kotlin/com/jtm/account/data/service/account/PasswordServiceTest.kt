@@ -103,7 +103,7 @@ class PasswordServiceTest {
         val encoder = mock(PasswordEncoder::class.java)
 
         `when`(request.headers).thenReturn(headers)
-        `when`(headers.getFirst(anyString())).thenReturn("test")
+        `when`(headers.getFirst(anyString())).thenReturn("Bearer test")
         `when`(profile.email).thenReturn("test@gmail.com")
         `when`(tokenProvider.passwordEncoder()).thenReturn(encoder)
         `when`(tokenProvider.getEmailPasswordReset(anyString())).thenReturn("test")

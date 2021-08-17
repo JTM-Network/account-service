@@ -37,7 +37,9 @@ class PasswordService @Autowired constructor(
     }
 
     fun resetPassword(request: ServerHttpRequest, profileDto: AccountProfileDto): Mono<Void> {
-        val token = request.headers.getFirst("Request") ?: return Mono.error { InvalidResetToken() }
+        val bearer = request.headers.getFirst("Authorization") ?: return Mono.error { InvalidResetToken() }
+        val token = bearer.replace("Bearer ", "")
+        if (token.isEmpty()) return Mono.error { InvalidResetToken() }
         val password = profileDto.password ?: return Mono.error { InvalidPassword() }
         return resetRepository.findByToken(token)
             .flatMap {
