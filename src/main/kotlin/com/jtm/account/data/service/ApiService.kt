@@ -47,6 +47,7 @@ class ApiService @Autowired constructor(private val tokenRepository: ApiTokenRep
         val email = tokenProvider.getEmailApi(token) ?: return Mono.error { InvalidJwtToken() }
         return accountRepository.findByEmail(email)
             .switchIfEmpty(Mono.defer { Mono.error { AccountNotFound() } })
+            .map { it.protectedView() }
     }
 
     fun getTokensByAccountId(id: UUID): Flux<ApiToken> {
