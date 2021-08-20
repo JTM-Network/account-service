@@ -4,6 +4,7 @@ import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.entity.ApiToken
 import com.jtm.account.core.domain.exception.account.AccountNotFound
 import com.jtm.account.core.domain.exception.token.ApiTokenNotFound
+import com.jtm.account.core.domain.exception.token.InvalidApiToken
 import com.jtm.account.core.domain.exception.token.InvalidJwtToken
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.ApiTokenRepository
@@ -34,6 +35,10 @@ class ApiService @Autowired constructor(private val tokenRepository: ApiTokenRep
     fun getToken(id: UUID): Mono<ApiToken> {
         return tokenRepository.findById(id)
             .switchIfEmpty(Mono.defer { Mono.error { ApiTokenNotFound() } })
+            .flatMap {
+                if (!it.valid) return@flatMap Mono.error { InvalidApiToken() }
+                return@flatMap Mono.just(it)
+            }
     }
 
     fun getAccount(request: ServerHttpRequest): Mono<AccountProfile> {
@@ -46,6 +51,7 @@ class ApiService @Autowired constructor(private val tokenRepository: ApiTokenRep
 
     fun getTokensByAccountId(id: UUID): Flux<ApiToken> {
         return tokenRepository.findByAccountId(id)
+            .filter { it.valid }
     }
 
     fun getTokens(request: ServerHttpRequest): Flux<ApiToken> {
@@ -55,6 +61,7 @@ class ApiService @Autowired constructor(private val tokenRepository: ApiTokenRep
         return accountRepository.findByEmail(email)
             .switchIfEmpty(Mono.defer { Mono.error { AccountNotFound() } })
             .flatMapMany { tokenRepository.findByAccountId(it.id) }
+            .filter { it.valid }
     }
 
     fun blacklistToken(request: ServerHttpRequest): Mono<ApiToken> {

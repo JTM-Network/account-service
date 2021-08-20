@@ -4,6 +4,7 @@ import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.entity.ApiToken
 import com.jtm.account.core.domain.exception.account.AccountNotFound
 import com.jtm.account.core.domain.exception.token.ApiTokenNotFound
+import com.jtm.account.core.domain.exception.token.InvalidApiToken
 import com.jtm.account.core.domain.exception.token.InvalidJwtToken
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.ApiTokenRepository
@@ -110,6 +111,20 @@ class ApiServiceTest {
 
         StepVerifier.create(returned)
             .expectError(ApiTokenNotFound::class.java)
+            .verify()
+    }
+
+    @Test
+    fun getToken_thenInvalidApiToken() {
+        `when`(tokenRepository.findById(any(UUID::class.java))).thenReturn(Mono.just(createdToken.invalidate()))
+
+        val returned = apiService.getToken(UUID.randomUUID())
+
+        verify(tokenRepository, times(1)).findById(any(UUID::class.java))
+        verifyNoMoreInteractions(tokenRepository)
+
+        StepVerifier.create(returned)
+            .expectError(InvalidApiToken::class.java)
             .verify()
     }
 
