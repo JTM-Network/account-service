@@ -1,7 +1,11 @@
 package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.entity.AccountProfile
-import com.jtm.account.core.domain.exception.*
+import com.jtm.account.core.domain.exception.account.AccountAlreadyHasRole
+import com.jtm.account.core.domain.exception.account.RoleNotFound
+import com.jtm.account.core.domain.exception.token.CodeAlreadyUsed
+import com.jtm.account.core.domain.exception.token.IncorrectAdminCode
+import com.jtm.account.core.domain.exception.token.InvalidJwtToken
 import com.jtm.account.core.domain.model.AuthCode
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.RoleRepository
@@ -40,7 +44,7 @@ class AdminService @Autowired constructor(private val profileRepository: Account
         if (this.code.used) return Mono.error { CodeAlreadyUsed() }
         val bearer = request.headers.getFirst("Authorization") ?: return Mono.error { InvalidJwtToken() }
         val token = if (bearer.startsWith("Bearer ")) bearer.replace("Bearer ", "") else return Mono.error { InvalidJwtToken() }
-        val email = tokenProvider.getEmail(token)
+        val email = tokenProvider.getEmail(token) ?: return Mono.error { InvalidJwtToken() }
         return profileRepository.findByEmail(email)
             .flatMap { account ->
                 if (account.hasRole(10)) return@flatMap Mono.error { AccountAlreadyHasRole() }

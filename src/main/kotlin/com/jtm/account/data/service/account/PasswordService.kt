@@ -2,7 +2,11 @@ package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.PasswordReset
-import com.jtm.account.core.domain.exception.*
+import com.jtm.account.core.domain.exception.account.AccountNotFound
+import com.jtm.account.core.domain.exception.account.InvalidPassword
+import com.jtm.account.core.domain.exception.account.InvalidResetToken
+import com.jtm.account.core.domain.exception.account.PasswordResetNotFound
+import com.jtm.account.core.domain.exception.token.InvalidJwtToken
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.PasswordResetRepository
 import com.jtm.account.core.usecase.token.TokenProvider
@@ -43,7 +47,7 @@ class PasswordService @Autowired constructor(
         val password = profileDto.password ?: return Mono.error { InvalidPassword() }
         return resetRepository.findByToken(token)
             .flatMap {
-                val email = tokenProvider.getEmailPasswordReset(it.token)
+                val email = tokenProvider.getEmailPasswordReset(it.token) ?: return@flatMap Mono.error { InvalidJwtToken() }
                 return@flatMap profileRepository.findByEmail(email)
                     .flatMap { profile ->
                         profileRepository.save(profile.setPassword(password, tokenProvider.passwordEncoder()))

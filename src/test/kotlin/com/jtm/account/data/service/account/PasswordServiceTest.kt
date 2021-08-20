@@ -3,13 +3,12 @@ package com.jtm.account.data.service.account
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.entity.PasswordReset
-import com.jtm.account.core.domain.exception.AccountNotFound
-import com.jtm.account.core.domain.exception.PasswordResetNotFound
+import com.jtm.account.core.domain.exception.account.AccountNotFound
+import com.jtm.account.core.domain.exception.account.PasswordResetNotFound
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.PasswordResetRepository
 import com.jtm.account.core.usecase.token.TokenProvider
 import com.jtm.account.data.service.MailService
-import com.turbomanage.httpclient.HttpHead
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

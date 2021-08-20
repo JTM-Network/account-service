@@ -67,12 +67,25 @@ class UtilJwt {
                 .compact()
         }
 
-        fun getEmail(key: String, token: String): String {
+        fun apiToken(key: String, email: String): String {
+            return Jwts.builder().signWith(SignatureAlgorithm.HS256, key)
+                .setSubject(email)
+                .setIssuedAt(Date(System.currentTimeMillis()))
+                .compact()
+        }
+
+        fun getEmail(key: String, token: String): String? {
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token).body.subject
         }
 
         fun getClaims(key: String, token: String): Jws<Claims> {
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token)
+        }
+
+        fun resolveToken(bearer: String): String? {
+            val TOKEN_PREFIX = "Bearer "
+            if (!bearer.startsWith(TOKEN_PREFIX)) return null
+            return bearer.replace(TOKEN_PREFIX, "")
         }
     }
 }

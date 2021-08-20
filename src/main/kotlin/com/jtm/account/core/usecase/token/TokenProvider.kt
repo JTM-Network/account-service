@@ -50,7 +50,11 @@ open class TokenProvider {
         return UtilJwt.passwordResetToken(requestKey, email)
     }
 
-    fun getEmail(token: String): String {
+    fun createApiToken(email: String): String {
+        return UtilJwt.apiToken(apiKey, email)
+    }
+
+    fun getEmail(token: String): String? {
         return UtilJwt.getEmail(accessKey, token)
     }
 
@@ -62,8 +66,12 @@ open class TokenProvider {
         }
     }
 
-    fun getEmailPasswordReset(token: String): String {
+    fun getEmailPasswordReset(token: String): String? {
         return UtilJwt.getEmail(requestKey, token)
+    }
+
+    fun getEmailApi(token: String): String? {
+        return UtilJwt.getEmail(apiKey, token)
     }
 
     fun getClaimsPasswordReset(token: String): Jws<Claims> {

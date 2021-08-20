@@ -2,7 +2,11 @@ package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.entity.Role
-import com.jtm.account.core.domain.exception.*
+import com.jtm.account.core.domain.exception.account.AccountAlreadyHasRole
+import com.jtm.account.core.domain.exception.account.RoleNotFound
+import com.jtm.account.core.domain.exception.token.CodeAlreadyUsed
+import com.jtm.account.core.domain.exception.token.IncorrectAdminCode
+import com.jtm.account.core.domain.exception.token.InvalidJwtToken
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.RoleRepository
 import com.jtm.account.core.usecase.token.TokenProvider

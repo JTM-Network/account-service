@@ -2,8 +2,8 @@ package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.dto.RoleDto
 import com.jtm.account.core.domain.entity.Role
-import com.jtm.account.core.domain.exception.RoleFound
-import com.jtm.account.core.domain.exception.RoleNotFound
+import com.jtm.account.core.domain.exception.account.RoleFound
+import com.jtm.account.core.domain.exception.account.RoleNotFound
 import com.jtm.account.core.usecase.repository.RoleRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

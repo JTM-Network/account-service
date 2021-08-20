@@ -1,9 +1,9 @@
 package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.entity.EmailVerification
-import com.jtm.account.core.domain.exception.EmailVerificationNotFound
-import com.jtm.account.core.domain.exception.InvalidJwtToken
-import com.jtm.account.core.domain.exception.InvalidVerifyToken
+import com.jtm.account.core.domain.exception.account.EmailVerificationNotFound
+import com.jtm.account.core.domain.exception.token.InvalidJwtToken
+import com.jtm.account.core.domain.exception.account.InvalidVerifyToken
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.VerificationRepository
 import com.jtm.account.core.usecase.token.TokenProvider
@@ -32,7 +32,7 @@ class VerifyService @Autowired constructor(private val profileRepository: Accoun
     fun requestVerification(request: ServerHttpRequest): Mono<Void> {
         val bearer = request.headers.getFirst("Authorization") ?: return Mono.error { InvalidJwtToken() }
         val token = if (bearer.startsWith("Bearer ")) bearer.replace("Bearer ", "") else return Mono.error { InvalidJwtToken() }
-        val email = tokenProvider.getEmail(token)
+        val email = tokenProvider.getEmail(token) ?: return Mono.error { InvalidJwtToken() }
         return verificationRepository.findByEmail(email)
             .switchIfEmpty(Mono.defer { verificationRepository.save(EmailVerification(email = email, token = tokenProvider.createVerificationToken(email), createdTime = System.currentTimeMillis(), endTime = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1))) })
             .flatMap {
@@ -51,7 +51,7 @@ class VerifyService @Autowired constructor(private val profileRepository: Accoun
         val bearer = request.headers.getFirst("Authorization") ?: return Mono.error { InvalidJwtToken() }
         val token = if (bearer.startsWith("Bearer ")) bearer.replace("Bearer ", "") else return Mono.error { InvalidJwtToken() }
         val verify = request.headers.getFirst("Verify") ?: return Mono.error { InvalidVerifyToken() }
-        val email = tokenProvider.getEmail(token)
+        val email = tokenProvider.getEmail(token) ?: return Mono.error { InvalidJwtToken() }
         return profileRepository.findByEmail(email)
             .flatMap { profile ->
                 return@flatMap verificationRepository.findByTokenAndEmail(verify, email)

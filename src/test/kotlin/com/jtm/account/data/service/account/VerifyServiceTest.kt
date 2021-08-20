@@ -2,7 +2,7 @@ package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.entity.EmailVerification
-import com.jtm.account.core.domain.exception.EmailVerificationNotFound
+import com.jtm.account.core.domain.exception.account.EmailVerificationNotFound
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.VerificationRepository
 import com.jtm.account.core.usecase.token.TokenProvider

@@ -2,7 +2,8 @@ package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.dto.AccountProfileDto
 import com.jtm.account.core.domain.entity.AccountProfile
-import com.jtm.account.core.domain.exception.*
+import com.jtm.account.core.domain.exception.account.*
+import com.jtm.account.core.domain.exception.token.InvalidJwtToken
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import com.jtm.account.core.usecase.repository.RoleRepository
 import com.jtm.account.core.usecase.token.TokenProvider
@@ -58,7 +59,7 @@ class AuthService @Autowired constructor(private val profileRepository: AccountP
     fun whoami(request: ServerHttpRequest): Mono<AccountProfile> {
         val bearer = request.headers.getFirst("Authorization") ?: return Mono.error { InvalidJwtToken() }
         val token =  if (bearer.startsWith("Bearer ")) bearer.replace("Bearer ", "") else return Mono.error { InvalidJwtToken() }
-        val email = tokenProvider.getEmail(token)
+        val email = tokenProvider.getEmail(token) ?: return Mono.error { InvalidJwtToken() }
         return profileRepository.findByEmail(email)
             .switchIfEmpty(Mono.defer { Mono.error { AccountNotFound() } })
             .map { it.protectedView() }
