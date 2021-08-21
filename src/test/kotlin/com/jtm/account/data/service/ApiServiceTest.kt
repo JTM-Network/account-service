@@ -79,7 +79,7 @@ class ApiServiceTest {
     @Test
     fun createTokenTest() {
         `when`(tokenProvider.getEmail(anyString())).thenReturn("test")
-        `when`(tokenProvider.createApiToken(anyString())).thenReturn("token")
+        `when`(tokenProvider.createApiToken(anyString(), anyOrNull())).thenReturn("token")
         `when`(accountRepository.findByEmail(anyString())).thenReturn(Mono.just(profile))
         `when`(tokenRepository.save(anyOrNull())).thenReturn(Mono.just(createdToken))
 

@@ -67,10 +67,11 @@ class UtilJwt {
                 .compact()
         }
 
-        fun apiToken(key: String, email: String): String {
+        fun apiToken(key: String, email: String, id: UUID): String {
             return Jwts.builder().signWith(SignatureAlgorithm.HS256, key)
                 .setSubject(email)
                 .setIssuedAt(Date(System.currentTimeMillis()))
+                .claim("id", id.toString())
                 .compact()
         }
 

@@ -50,8 +50,8 @@ open class TokenProvider {
         return UtilJwt.passwordResetToken(requestKey, email)
     }
 
-    fun createApiToken(email: String): String {
-        return UtilJwt.apiToken(apiKey, email)
+    fun createApiToken(email: String, id: UUID): String {
+        return UtilJwt.apiToken(apiKey, email, id)
     }
 
     fun getEmail(token: String): String? {

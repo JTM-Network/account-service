@@ -29,7 +29,7 @@ class ApiService @Autowired constructor(private val tokenRepository: ApiTokenRep
         val email = tokenProvider.getEmail(token) ?: return Mono.error { InvalidJwtToken() }
         return accountRepository.findByEmail(email)
             .switchIfEmpty(Mono.defer { Mono.error(AccountNotFound()) })
-            .flatMap { tokenRepository.save(ApiToken(accountId = it.id, token = tokenProvider.createApiToken(it.email))) }
+            .flatMap { tokenRepository.save(ApiToken(accountId = it.id, token = tokenProvider.createApiToken(it.email, it.id))) }
     }
 
     fun getToken(id: UUID): Mono<ApiToken> {
