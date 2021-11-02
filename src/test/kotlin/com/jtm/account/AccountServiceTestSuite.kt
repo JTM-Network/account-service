@@ -14,7 +14,9 @@ import org.junit.runners.Suite
     VerifyServiceTest::class,
     AuthServiceTest::class,
     AdminServiceTest::class,
+    AccountServiceTest::class,
 
+    AccountControllerTest::class,
     RoleControllerTest::class,
     AuthControllerTest::class,
     VerifyControllerTest::class,
