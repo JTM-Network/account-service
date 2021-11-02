@@ -20,6 +20,9 @@ class AccountController @Autowired constructor(private val accountService: Accou
         return accountService.getAccount(id)
     }
 
+    /**
+     * Get all accounts
+     */
     @GetMapping("/all")
     fun getAccounts(): Flux<AccountProfile> {
         return accountService.getAccounts()
