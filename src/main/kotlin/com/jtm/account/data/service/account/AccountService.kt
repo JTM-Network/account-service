@@ -4,10 +4,12 @@ import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.exception.account.AccountNotFound
 import com.jtm.account.core.usecase.repository.AccountProfileRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
+@Service
 class AccountService @Autowired constructor(private val profileRepository: AccountProfileRepository) {
 
     fun getAccount(id: UUID): Mono<AccountProfile> {
