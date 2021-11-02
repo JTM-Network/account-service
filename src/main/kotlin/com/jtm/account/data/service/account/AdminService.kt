@@ -2,6 +2,7 @@ package com.jtm.account.data.service.account
 
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.exception.account.AccountAlreadyHasRole
+import com.jtm.account.core.domain.exception.account.AccountNotFound
 import com.jtm.account.core.domain.exception.account.RoleNotFound
 import com.jtm.account.core.domain.exception.token.CodeAlreadyUsed
 import com.jtm.account.core.domain.exception.token.IncorrectAdminCode
@@ -13,7 +14,9 @@ import com.jtm.account.core.usecase.token.TokenProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.annotation.PreDestroy
@@ -56,5 +59,14 @@ class AdminService @Autowired constructor(private val profileRepository: Account
                 this.code.used()
                 it.protectedView()
             }
+    }
+
+    fun getAccount(id: UUID): Mono<AccountProfile> {
+        return profileRepository.findById(id)
+                .switchIfEmpty(Mono.defer { Mono.error(AccountNotFound()) })
+    }
+
+    fun getAccounts(): Flux<AccountProfile> {
+        return profileRepository.findAll()
     }
 }

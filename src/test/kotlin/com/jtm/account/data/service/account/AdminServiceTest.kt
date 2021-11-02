@@ -3,6 +3,7 @@ package com.jtm.account.data.service.account
 import com.jtm.account.core.domain.entity.AccountProfile
 import com.jtm.account.core.domain.entity.Role
 import com.jtm.account.core.domain.exception.account.AccountAlreadyHasRole
+import com.jtm.account.core.domain.exception.account.AccountNotFound
 import com.jtm.account.core.domain.exception.account.RoleNotFound
 import com.jtm.account.core.domain.exception.token.CodeAlreadyUsed
 import com.jtm.account.core.domain.exception.token.IncorrectAdminCode
@@ -18,6 +19,7 @@ import org.mockito.kotlin.anyOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.test.context.junit4.SpringRunner
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.util.*
@@ -162,5 +164,54 @@ class AdminServiceTest {
         StepVerifier.create(returned)
             .expectError(RoleNotFound::class.java)
             .verify()
+    }
+
+    @Test
+    fun getAccount_thenNotFound() {
+        `when`(profileRepository.findById(any(UUID::class.java))).thenReturn(Mono.empty())
+
+        val returned = adminService.getAccount(UUID.randomUUID())
+
+        verify(profileRepository, times(1)).findById(any(UUID::class.java))
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+                .expectError(AccountNotFound::class.java)
+                .verify()
+    }
+
+    @Test
+    fun getAccount() {
+        `when`(profileRepository.findById(any(UUID::class.java))).thenReturn(Mono.just(account))
+
+        val returned = adminService.getAccount(UUID.randomUUID())
+
+        verify(profileRepository, times(1)).findById(any(UUID::class.java))
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+                .assertNext {
+                    assertThat(it.id).isEqualTo(account.id)
+                    assertThat(it.username).isEqualTo(account.username)
+                    assertThat(it.email).isEqualTo(account.email)
+                }
+                .verifyComplete()
+    }
+
+    @Test
+    fun getAccounts() {
+        `when`(profileRepository.findAll()).thenReturn(Flux.just(account))
+
+        val returned = adminService.getAccounts()
+
+        verify(profileRepository, times(1)).findAll()
+        verifyNoMoreInteractions(profileRepository)
+
+        StepVerifier.create(returned)
+                .assertNext {
+                    assertThat(it.id).isEqualTo(account.id)
+                    assertThat(it.username).isEqualTo(account.username)
+                    assertThat(it.email).isEqualTo(account.email)
+                }
     }
 }
