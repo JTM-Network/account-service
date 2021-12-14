@@ -22,7 +22,7 @@ open class DiscordConfiguration {
         builder.setStatus(OnlineStatus.IDLE)
         builder.addEventListeners(AuthCommands())
         val jda = builder.build()
-        jda.upsertCommand("auth", "Authenticate discord account to JTM Network account.")
+        jda.upsertCommand("auth", "Authenticate discord account to JTM Network account.").queue()
         return jda
     }
 }
