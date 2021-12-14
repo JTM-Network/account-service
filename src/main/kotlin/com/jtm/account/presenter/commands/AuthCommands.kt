@@ -9,6 +9,7 @@ class AuthCommands: ListenerAdapter() {
         if (event.name != "auth") return
         val split = event.commandPath.split("/")
         val args = split.subList(1, split.size-1)
+        event.reply(args.toString()).setEphemeral(true).queue()
         println(args.toString())
     }
 }

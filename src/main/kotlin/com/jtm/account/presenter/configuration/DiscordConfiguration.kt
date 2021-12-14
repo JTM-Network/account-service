@@ -18,9 +18,9 @@ open class DiscordConfiguration {
     @Bean
     open fun discordBot(): JDA {
         val builder = JDABuilder.createDefault(token)
+        builder.addEventListeners(AuthCommands())
         builder.setActivity(Activity.playing("JTM Network"))
         builder.setStatus(OnlineStatus.IDLE)
-        builder.addEventListeners(AuthCommands())
         val jda = builder.build()
         jda.upsertCommand("auth", "Authenticate discord account to JTM Network account.").queue()
         return jda
