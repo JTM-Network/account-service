@@ -16,3 +16,6 @@ reactor:
   ipc:
     netty:
       workerCount: 1
+
+discord:
+  token: ${DISCORD_TOKEN}

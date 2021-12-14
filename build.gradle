@@ -37,6 +37,7 @@ dependencies {
     implementation 'io.sentry:sentry:4.3.0'
     implementation 'io.fabric8:kubernetes-client:5.1.1'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3'
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.2'
 
     runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect:1.5.0'
     compileOnly 'org.projectlombok:lombok:1.18.8'

@@ -13,11 +13,17 @@ data class AccountProfile(
     var email: String,
     var password: String,
     val roles: MutableList<Role>,
-    var verified: Boolean
+    var verified: Boolean,
+    var discordId: Long = 0,
 ) {
     fun update(accountProfileDto: AccountProfileDto): AccountProfile {
         this.username = accountProfileDto.username!!
         this.email = accountProfileDto.email!!
+        return this
+    }
+
+    fun updateDiscord(discordId: Long): AccountProfile {
+        this.discordId = discordId
         return this
     }
 
