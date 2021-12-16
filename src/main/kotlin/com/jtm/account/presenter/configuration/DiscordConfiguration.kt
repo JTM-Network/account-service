@@ -19,7 +19,7 @@ open class DiscordConfiguration {
     open fun discordBot(): JDA {
         val builder = JDABuilder.createDefault(token)
         builder.addEventListeners(AuthCommands())
-        builder.setActivity(Activity.streaming("JTM Network", "https://www.jtm-network.com"))
+        builder.setActivity(Activity.watching("JTM Network"))
         builder.setStatus(OnlineStatus.IDLE)
         return builder.build()
     }
