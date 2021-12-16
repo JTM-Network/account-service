@@ -18,7 +18,11 @@ class RoleService @Autowired constructor(private val roleRepository: RoleReposit
     @PostConstruct
     fun init() {
         insertRole(RoleDto("ADMIN", 10)).block()
-        insertRole(RoleDto("CLIENT", 1)).block()
+        insertRole(RoleDto("CLIENT", 0)).block()
+
+        getRole("CLIENT")
+                .flatMap { updateRole(it.id, RoleDto(it.name, 0)) }
+                .block()
     }
 
     fun insertRole(role: RoleDto): Mono<Role> {
@@ -36,6 +40,11 @@ class RoleService @Autowired constructor(private val roleRepository: RoleReposit
     fun getRole(id: UUID): Mono<Role> {
         return roleRepository.findById(id)
             .switchIfEmpty(Mono.defer { Mono.error { RoleNotFound() } })
+    }
+
+    fun getRole(name: String): Mono<Role> {
+        return roleRepository.findByName(name)
+                .switchIfEmpty(Mono.defer { Mono.error(RoleNotFound()) })
     }
 
     fun getRoles(): Flux<Role> {
