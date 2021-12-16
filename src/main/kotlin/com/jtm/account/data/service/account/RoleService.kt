@@ -20,7 +20,7 @@ class RoleService @Autowired constructor(private val roleRepository: RoleReposit
         insertRole(RoleDto("ADMIN", 10)).block()
         insertRole(RoleDto("CLIENT", 0)).block()
 
-        getRole("CLIENT")
+        getRoleByName("CLIENT")
                 .flatMap { updateRole(it.id, RoleDto(it.name, 0)) }
                 .block()
     }
@@ -42,7 +42,7 @@ class RoleService @Autowired constructor(private val roleRepository: RoleReposit
             .switchIfEmpty(Mono.defer { Mono.error { RoleNotFound() } })
     }
 
-    fun getRole(name: String): Mono<Role> {
+    fun getRoleByName(name: String): Mono<Role> {
         return roleRepository.findByName(name)
                 .switchIfEmpty(Mono.defer { Mono.error(RoleNotFound()) })
     }
@@ -55,5 +55,9 @@ class RoleService @Autowired constructor(private val roleRepository: RoleReposit
         return roleRepository.findById(id)
             .switchIfEmpty(Mono.defer { Mono.error { RoleNotFound() } })
             .flatMap { roleRepository.delete(it).thenReturn(it) }
+    }
+
+    fun deleteAll(): Mono<Void> {
+        return roleRepository.deleteAll()
     }
 }
