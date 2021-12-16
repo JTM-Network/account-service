@@ -16,11 +16,12 @@ open class DiscordConfiguration {
     lateinit var token: String
 
     @Bean
-    open fun discordBot(): JDA {
+    open fun discordBot(): JDA? {
         val builder = JDABuilder.createDefault(token)
         builder.addEventListeners(AuthCommands())
         builder.setActivity(Activity.watching("JTM Network"))
         builder.setStatus(OnlineStatus.IDLE)
-        return builder.build()
+        val jda = builder.build() ?: return null
+        return jda
     }
 }

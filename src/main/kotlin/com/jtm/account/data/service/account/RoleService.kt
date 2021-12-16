@@ -10,9 +10,16 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
+import javax.annotation.PostConstruct
 
 @Service
 class RoleService @Autowired constructor(private val roleRepository: RoleRepository) {
+
+    @PostConstruct
+    fun init() {
+        insertRole(RoleDto("ADMIN", 10)).block()
+        insertRole(RoleDto("CLIENT", 1)).block()
+    }
 
     fun insertRole(role: RoleDto): Mono<Role> {
         return roleRepository.findByName(role.name)
