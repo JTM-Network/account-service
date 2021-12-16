@@ -20,9 +20,8 @@ class RoleService @Autowired constructor(private val roleRepository: RoleReposit
         insertRole(RoleDto("ADMIN", 10)).block()
         insertRole(RoleDto("CLIENT", 0)).block()
 
-        getRoleByName("CLIENT")
-                .flatMap { updateRole(it.id, RoleDto(it.name, 0)) }
-                .block()
+        val updated = getRoleByName("CLIENT").block() ?: return
+        updateRole(updated.id, RoleDto(updated.name, 0)).block()
     }
 
     fun insertRole(role: RoleDto): Mono<Role> {
