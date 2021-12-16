@@ -5,20 +5,28 @@ import com.jtm.account.core.domain.entity.Role
 import com.jtm.account.core.domain.exception.account.RoleFound
 import com.jtm.account.core.domain.exception.account.RoleNotFound
 import com.jtm.account.core.usecase.repository.RoleRepository
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.lang.Exception
 import java.util.*
 import javax.annotation.PostConstruct
 
 @Service
 class RoleService @Autowired constructor(private val roleRepository: RoleRepository) {
 
+    private val logger = LoggerFactory.getLogger(RoleService::class.java)
+
     @PostConstruct
     fun init() {
-        val updated = getRoleByName("CLIENT").block() ?: return
-        updateRole(updated.id, RoleDto(updated.name, 0)).block()
+        try {
+            val updated = getRoleByName("CLIENT").block() ?: return
+            updateRole(updated.id, RoleDto(updated.name, 0)).block()
+        } catch (ex: Exception) {
+            logger.error("Failed to update client: ${ex.message}")
+        }
     }
 
     fun insertRole(role: RoleDto): Mono<Role> {
