@@ -19,6 +19,16 @@ class AdminController @Autowired constructor(private val adminService: AdminServ
     @GetMapping("/{code}")
     fun makeAdmin(request: ServerHttpRequest, @PathVariable code: String): Mono<AccountProfile> = adminService.makeAdmin(request, code)
 
+    @GetMapping("/code")
+    fun getCode(): Mono<String> {
+        return adminService.getCode()
+    }
+
+    @GetMapping("/code/refresh")
+    fun refreshCode(): Mono<Void> {
+        return adminService.refreshCode()
+    }
+
     @GetMapping("/acc/{id}")
     fun getAccount(@PathVariable id: UUID): Mono<AccountProfile> = adminService.getAccount(id)
 

@@ -61,6 +61,16 @@ class AdminService @Autowired constructor(private val profileRepository: Account
             }
     }
 
+    fun getCode(): Mono<String> {
+        return Mono.just(code.code)
+    }
+
+    fun refreshCode(): Mono<Void> {
+        return Mono.just(code)
+                .map { this.code = AuthCode() }
+                .then()
+    }
+
     fun getAccount(id: UUID): Mono<AccountProfile> {
         return profileRepository.findById(id)
                 .switchIfEmpty(Mono.defer { Mono.error(AccountNotFound()) })
